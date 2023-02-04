@@ -554,6 +554,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2870009100756983447, guid: dbcd94df244d64ac1b732000a1412262,
         type: 3}
+      propertyPath: dangerSpeed
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870009100756983447, guid: dbcd94df244d64ac1b732000a1412262,
+        type: 3}
+      propertyPath: dangerSpeedNormal
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870009100756983447, guid: dbcd94df244d64ac1b732000a1412262,
+        type: 3}
+      propertyPath: dangerSpeedTooClose
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870009100756983447, guid: dbcd94df244d64ac1b732000a1412262,
+        type: 3}
       propertyPath: minStandingDistanceSqr
       value: 200
       objectReference: {fileID: 0}

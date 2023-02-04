@@ -10,7 +10,8 @@ public class RabbitController : MonoBehaviour
     [Header("Danger")]
     [SerializeField] private float minStandingDistanceSqr = 25;
     [SerializeField] private float minCrouchingDistanceSqr = 4;
-    [SerializeField] private float dangerSpeed = 0.1f;
+    [SerializeField] private float dangerSpeedNormal = 0.1f;
+    [SerializeField] private float dangerSpeedTooClose = 0.2f;
     private float MinStandingDistance => Mathf.Sqrt(minStandingDistanceSqr);
     private float MinCrouchingDistance => Mathf.Sqrt(minCrouchingDistanceSqr);
     public float AlertPercentage => _alertPercentage;
@@ -54,8 +55,10 @@ public class RabbitController : MonoBehaviour
                 DecreaseDanger();
                 break;
             case PlayerAlertLevel.CLOSE_STANDING:
+                IncreaseDanger(dangerSpeedNormal);
+                break;
             case PlayerAlertLevel.TOO_CLOSE_CROUCHING:
-                IncreaseDanger();
+                IncreaseDanger(dangerSpeedTooClose);
                 break;
             case PlayerAlertLevel.TOO_CLOSE_STANDING:
                 Escape();
@@ -86,7 +89,7 @@ public class RabbitController : MonoBehaviour
         }
     }
 
-    private void IncreaseDanger()
+    private void IncreaseDanger(float dangerSpeed)
     {
         _alertPercentage = Mathf.Clamp01(_alertPercentage + Time.deltaTime * dangerSpeed);
         //_animator.SetInteger(Danger, 1);
@@ -94,7 +97,7 @@ public class RabbitController : MonoBehaviour
 
     private void DecreaseDanger()
     {
-        _alertPercentage = Mathf.Clamp01(_alertPercentage - Time.deltaTime * dangerSpeed);
+        _alertPercentage = Mathf.Clamp01(_alertPercentage - Time.deltaTime * dangerSpeedNormal);
         //_animator.SetInteger(Danger, 0);
     }
 
