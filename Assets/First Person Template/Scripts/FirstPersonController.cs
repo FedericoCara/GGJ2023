@@ -88,6 +88,11 @@ namespace StarterAssets
             }
         }
 
+        public bool IsCrouched
+        {
+            get => _input.crouch;
+        }
+
         private void Awake()
         {
             // get a reference to our main camera
