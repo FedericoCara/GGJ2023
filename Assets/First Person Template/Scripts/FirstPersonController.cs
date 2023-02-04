@@ -180,6 +180,7 @@ namespace StarterAssets
             if (_isAttacking && _attackTimeoutDelta < 0)
             {
                 _isAttacking = false;
+                Attacked.Invoke();
             }
             _input.attack = false;
 
