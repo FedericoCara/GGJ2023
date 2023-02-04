@@ -82,7 +82,7 @@ namespace StarterAssets
         private float _attackTimeoutDelta;
         private float _fallTimeoutDelta;
 
-        private float preparingAttackTimeout = 1f;
+        private float preparingAttackTimeout = 0.8f;
 
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
