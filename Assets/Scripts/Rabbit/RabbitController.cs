@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using StarterAssets;
 using UnityEngine;
 
@@ -25,13 +26,15 @@ public class RabbitController : MonoBehaviour
     private static readonly int AlertParameter = Animator.StringToHash("Alert");
     private static readonly int HideParameter = Animator.StringToHash("Hide");
     private bool _escaping = false;
+    private bool _captured = false;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
         _spawnController = FindObjectOfType<RabbitSpawnController>();
         _player = GameObject.FindWithTag("Player").GetComponent<FirstPersonController>();
         _playerTransform = _player.transform;
+        _player.Attacked += PlayerOnAttacked;
         _input = _playerTransform.GetComponent<StarterAssetsInputs>();
     }
 
@@ -64,6 +67,7 @@ public class RabbitController : MonoBehaviour
                 IncreaseDanger(dangerSpeedNormal);
                 break;
             case PlayerAlertLevel.TOO_CLOSE_CROUCHING:
+            case PlayerAlertLevel.ATTACKING:
                 IncreaseDanger(dangerSpeedTooClose);
                 break;
             case PlayerAlertLevel.TOO_CLOSE_STANDING:
@@ -81,6 +85,8 @@ public class RabbitController : MonoBehaviour
     private PlayerAlertLevel GetPlayerAlertLevel()
     {
         var sqrDistance = Vector3.SqrMagnitude(_playerTransform.position - transform.position);
+        if (_player.IsAttacking)
+            return PlayerAlertLevel.ATTACKING;
         if (!_player.IsCrouched)
         {
             return sqrDistance < minCrouchingDistanceSqr ? PlayerAlertLevel.TOO_CLOSE_STANDING :
@@ -114,11 +120,36 @@ public class RabbitController : MonoBehaviour
             _animator.SetBool(AlertParameter, false);
     }
 
-    private void Respawn()
+    private void PlayerOnAttacked()
+    {
+        if (_captured)
+        {
+            DoCaptureAnimation();
+        }
+        else
+        {
+            Escape();
+        }
+    }
+
+    private void DoCaptureAnimation()
+    {
+        transform.DOMove(_playerTransform.position, 0.6f).OnComplete(() => GameManager.Instance.DoWin());
+    }
+
+    public void Respawn()
     {
         transform.position = _spawnController.GetFarthestPoint(_playerTransform).position;
         _alertPercentage = 0;
         _escaping = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            _captured = true;
+        }
     }
 
     private void OnDrawGizmosSelected()
