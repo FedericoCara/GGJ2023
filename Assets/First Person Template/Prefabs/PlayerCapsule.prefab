@@ -207,7 +207,7 @@ MonoBehaviour:
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
+  GroundedOffset: 1.14
   GroundedRadius: 0.5
   GroundLayers:
     serializedVersion: 2
@@ -249,6 +249,7 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   crouch: 0
+  respawn: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
