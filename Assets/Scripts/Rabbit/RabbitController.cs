@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class RabbitController : MonoBehaviour
 {
-    //[SerializeField] private Animator _animator;
     [Header("Danger")]
     [SerializeField] private float minStandingDistanceSqr = 25;
+
     [SerializeField] private float minCrouchingDistanceSqr = 4;
     [SerializeField] private float dangerSpeedNormal = 0.1f;
     [SerializeField] private float dangerSpeedTooClose = 0.2f;
@@ -16,15 +16,19 @@ public class RabbitController : MonoBehaviour
     private float MinCrouchingDistance => Mathf.Sqrt(minCrouchingDistanceSqr);
     public float AlertPercentage => _alertPercentage;
 
+    private Animator _animator;
     private RabbitSpawnController _spawnController;
     private FirstPersonController _player;
     private Transform _playerTransform;
     private StarterAssetsInputs _input;
     private float _alertPercentage;
-    //private static readonly int Danger = Animator.StringToHash("Danger");
+    private static readonly int AlertParameter = Animator.StringToHash("Alert");
+    private static readonly int HideParameter = Animator.StringToHash("Hide");
+    private bool _escaping = false;
 
     private void Start()
     {
+        _animator = GetComponent<Animator>();
         _spawnController = FindObjectOfType<RabbitSpawnController>();
         _player = GameObject.FindWithTag("Player").GetComponent<FirstPersonController>();
         _playerTransform = _player.transform;
@@ -41,12 +45,14 @@ public class RabbitController : MonoBehaviour
     {
         if (_input.respawn)
         {
-            Respawn(_playerTransform);
+            Respawn();
         }
     }
 
     private void CheckPlayer()
     {
+        if(_escaping)
+            return;
         PlayerAlertLevel playerAlertLevel = GetPlayerAlertLevel();
         switch (playerAlertLevel)
         {
@@ -68,8 +74,8 @@ public class RabbitController : MonoBehaviour
 
     private void Escape()
     {
-        
-        Respawn(_playerTransform);
+        _escaping = true;
+        _animator.SetTrigger(HideParameter);
     }
 
     private PlayerAlertLevel GetPlayerAlertLevel()
@@ -92,21 +98,28 @@ public class RabbitController : MonoBehaviour
     private void IncreaseDanger(float dangerSpeed)
     {
         _alertPercentage = Mathf.Clamp01(_alertPercentage + Time.deltaTime * dangerSpeed);
-        //_animator.SetInteger(Danger, 1);
+        if (_alertPercentage >= 1)
+        {
+            Escape();
+            return;
+        }
+        if(!_animator.GetBool(AlertParameter))
+            _animator.SetBool(AlertParameter, true);
     }
 
     private void DecreaseDanger()
     {
         _alertPercentage = Mathf.Clamp01(_alertPercentage - Time.deltaTime * dangerSpeedNormal);
-        //_animator.SetInteger(Danger, 0);
+        if(_animator.GetBool(AlertParameter))
+            _animator.SetBool(AlertParameter, false);
     }
 
-    private void Respawn(Transform playerPosition)
+    private void Respawn()
     {
-        transform.position = _spawnController.GetFarthestPoint(playerPosition).position;
+        transform.position = _spawnController.GetFarthestPoint(_playerTransform).position;
         _alertPercentage = 0;
+        _escaping = false;
     }
-
 
     private void OnDrawGizmosSelected()
     {
