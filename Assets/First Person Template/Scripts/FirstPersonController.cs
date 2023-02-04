@@ -110,6 +110,10 @@ namespace StarterAssets
         {
             get => _input.crouch;
         }
+        public bool IsAttacking
+        {
+            get => _isAttacking;
+        }
 
         private void Awake()
         {
@@ -158,19 +162,19 @@ namespace StarterAssets
         private void Attack()
         {
             //preparing Attack
-            if (_input.preparingAttack && _preparingAttackTimeoutDelta>=0)
+            if (_input.preparingAttack && _preparingAttackTimeoutDelta >= 0)
             {
-                Hand.localPosition += Vector3.up*0.001f;
+                Hand.localPosition += Vector3.up * 0.001f;
                 _preparingAttackTimeoutDelta -= Time.deltaTime;
             }
-            else if(!_input.preparingAttack)
+            else if (!_input.preparingAttack)
             {
                 Hand.localPosition = Vector3.zero;
                 _preparingAttackTimeoutDelta = preparingAttackTimeout;
             }
-            
+
             //Attacking
-            _input.jump = false;
+            //_input.jump = false;
             if (_input.attack && _attackTimeoutDelta <= 0 && !_isAttacking)
             {
                 _input.jump = true;
@@ -180,7 +184,7 @@ namespace StarterAssets
             if (_isAttacking && _attackTimeoutDelta < 0)
             {
                 _isAttacking = false;
-                Attacked.Invoke();
+                Attacked?.Invoke();
             }
             _input.attack = false;
 
@@ -318,7 +322,8 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                if (!_isAttacking)
+                    _input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
