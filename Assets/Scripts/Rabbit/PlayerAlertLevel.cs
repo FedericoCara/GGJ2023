@@ -1,0 +1,8 @@
+public enum PlayerAlertLevel
+{
+    FAR,
+    CLOSE_STANDING,
+    CLOSE_CROUCHING,
+    TOO_CLOSE_STANDING,
+    TOO_CLOSE_CROUCHING
+}
