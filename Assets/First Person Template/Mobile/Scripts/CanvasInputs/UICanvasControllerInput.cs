@@ -31,6 +31,10 @@ namespace StarterAssets
         {
             starterAssetsInputs.CrouchInput(virtualCrouchState);
         }
+        public void VirtualAttackInput(bool virtualAttackState)
+        {
+            starterAssetsInputs.AttackInput(virtualAttackState);
+        }
 
     }
 

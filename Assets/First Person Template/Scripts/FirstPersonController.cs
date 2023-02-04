@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 #endif
 
 namespace StarterAssets
@@ -28,10 +30,16 @@ namespace StarterAssets
         public float JumpHeight = 1.2f;
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float Gravity = -15.0f;
+        [Tooltip("The time that the player is Attacking")]
+        public float AttackTime = 1f;
+        [Tooltip("The speed that the player Attacks")]
+        public float AttackSpeed = 50f;
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         public float JumpTimeout = 0.1f;
+        [Tooltip("Time required to pass before being able to attack again")]
+        public float AttackTimeout = 0.1f;
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
@@ -53,6 +61,11 @@ namespace StarterAssets
         [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -90.0f;
 
+        [Header("Hands")]
+        public Transform Hand;
+
+        public event Action Attacked;
+
         // cinemachine
         private float _cinemachineTargetPitch;
 
@@ -60,11 +73,16 @@ namespace StarterAssets
         private float _speed;
         private float _rotationVelocity;
         private float _verticalVelocity;
-        private float _terminalVelocity = 53.0f;
+        private float _terminalVelocity = 100.0f;
+        private bool _isAttacking;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
+        private float _preparingAttackTimeoutDelta;
+        private float _attackTimeoutDelta;
         private float _fallTimeoutDelta;
+
+        private float preparingAttackTimeout = 1f;
 
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
@@ -119,9 +137,10 @@ namespace StarterAssets
 
         private void Update()
         {
+            Crouch();
+            Attack();
             JumpAndGravity();
             GroundedCheck();
-            Crouch();
             Move();
         }
 
@@ -133,8 +152,38 @@ namespace StarterAssets
         private void GroundedCheck()
         {
             // set sphere position, with offset
-            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset * transform.localScale.y, transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+        }
+        private void Attack()
+        {
+            //preparing Attack
+            if (_input.preparingAttack && _preparingAttackTimeoutDelta>=0)
+            {
+                Hand.localPosition += Vector3.up*0.001f;
+                _preparingAttackTimeoutDelta -= Time.deltaTime;
+            }
+            else if(!_input.preparingAttack)
+            {
+                Hand.localPosition = Vector3.zero;
+                _preparingAttackTimeoutDelta = preparingAttackTimeout;
+            }
+            
+            //Attacking
+            _input.jump = false;
+            if (_input.attack && _attackTimeoutDelta <= 0 && !_isAttacking)
+            {
+                _input.jump = true;
+                _isAttacking = true;
+                _attackTimeoutDelta = AttackTime;
+            }
+            if (_isAttacking && _attackTimeoutDelta < 0)
+            {
+                _isAttacking = false;
+            }
+            _input.attack = false;
+
+            _attackTimeoutDelta -= Time.deltaTime;
         }
         private void Crouch()
         {
@@ -180,7 +229,15 @@ namespace StarterAssets
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+            if (_input.move == Vector2.zero)
+            {
+                targetSpeed = 0.0f;
+            }
+
+            if (_isAttacking)//|| _verticalVelocity > 0)
+            {
+                targetSpeed = AttackSpeed;
+            }
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -205,6 +262,10 @@ namespace StarterAssets
 
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+            if (_isAttacking)
+            {
+                inputDirection = transform.forward;
+            }
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
@@ -232,11 +293,11 @@ namespace StarterAssets
                 }
 
                 // Jump
-                //if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-                //{
-                //    // the square root of H * -2 * G = how much velocity needed to reach desired height
-                //    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                //}
+                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                {
+                    // the square root of H * -2 * G = how much velocity needed to reach desired height
+                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                }
 
                 // jump timeout
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -262,7 +323,7 @@ namespace StarterAssets
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
             if (_verticalVelocity < _terminalVelocity)
             {
-                _verticalVelocity += Gravity * Time.deltaTime;
+                _verticalVelocity += _isAttacking ? 3 * Gravity * Time.deltaTime : Gravity * Time.deltaTime;
             }
         }
 

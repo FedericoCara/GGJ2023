@@ -204,7 +204,10 @@ MonoBehaviour:
   SpeedChangeRate: 10
   JumpHeight: 1.2
   Gravity: -15
+  AttackTime: 0.1
+  AttackSpeed: 50
   JumpTimeout: 0.1
+  AttackTimeout: 1
   FallTimeout: 0.15
   Grounded: 1
   GroundedOffset: 1.14
@@ -215,6 +218,7 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 4135013735270702863}
   TopClamp: 89
   BottomClamp: -89
+  Hand: {fileID: 0}
 --- !u!114 &1978471637655604388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +253,10 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   crouch: 0
+  attackInput: {fileID: -944628639613478452, guid: 4419d82f33d36e848b3ed5af4c8da37e,
+    type: 3}
+  attack: 0
+  preparingAttack: 0
   respawn: 0
   analogMovement: 0
   cursorLocked: 1
