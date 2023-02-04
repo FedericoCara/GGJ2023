@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RabbitSpawnController : MonoBehaviour
 {
-    [SerializeField] private List<Transform> spawnPoints;
+    private List<Transform> spawnPoints;
 
     private void Awake()
     {

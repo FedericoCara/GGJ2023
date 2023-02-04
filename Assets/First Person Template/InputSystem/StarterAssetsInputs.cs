@@ -14,6 +14,9 @@ namespace StarterAssets
 		public bool sprint;
         public bool crouch;
 
+        [Header("Testing")] 
+        public bool respawn;
+        
         [Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -48,13 +51,19 @@ namespace StarterAssets
 		{
 			CrouchInput(value.isPressed);
 		}
+
+		public void OnRespawn(InputValue value)
+		{
+			RespawnInput(value.isPressed);
+		}
+
 #endif
 
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
-		} 
+		}
 
 		public void LookInput(Vector2 newLookDirection)
 		{
@@ -70,10 +79,17 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
 		public void CrouchInput(bool newCrouchState)
 		{
 			crouch = newCrouchState;
 		}
+
+		private void RespawnInput(bool newRespawnState)
+		{
+			respawn = newRespawnState;
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
