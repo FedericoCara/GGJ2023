@@ -163,12 +163,12 @@ namespace StarterAssets
         private void Attack()
         {
             //preparing Attack
-            if (_input.preparingAttack && _preparingAttackTimeoutDelta >= 0)
+            if ((_input.preparingAttack && _preparingAttackTimeoutDelta >= 0))
             {
                 Hand.localPosition += Vector3.up * 0.001f;
                 _preparingAttackTimeoutDelta -= Time.deltaTime;
             }
-            else if (!_input.preparingAttack)
+            else if (!_input.preparingAttack&& !_isDamaging&& !_input.attack)
             {
                 Hand.localPosition = Vector3.zero;
                 _preparingAttackTimeoutDelta = preparingAttackTimeout;
