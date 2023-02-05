@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -66,6 +68,8 @@ namespace StarterAssets
 
         public event Action Attacked;
 
+        public AudioSource audioSource;
+        public AudioClip[] Steps;
         // cinemachine
         private float _cinemachineTargetPitch;
 
@@ -168,7 +172,7 @@ namespace StarterAssets
                 Hand.localPosition += Vector3.up * 0.001f;
                 _preparingAttackTimeoutDelta -= Time.deltaTime;
             }
-            else if (!_input.preparingAttack&& !_isDamaging&& !_input.attack)
+            else if (!_input.preparingAttack && !_isDamaging && !_input.attack)
             {
                 Hand.localPosition = Vector3.zero;
                 _preparingAttackTimeoutDelta = preparingAttackTimeout;
@@ -230,6 +234,13 @@ namespace StarterAssets
             }
         }
 
+        private IEnumerator StepSound()
+        {
+            yield return new WaitForSeconds(0.3f);
+            audioSource.Stop();
+            audioSource.PlayOneShot(Steps[UnityEngine.Random.Range(0, 4)]);
+            StopAllCoroutines();
+        }
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -249,6 +260,25 @@ namespace StarterAssets
             if (_isAttacking)//|| _verticalVelocity > 0)
             {
                 targetSpeed = AttackSpeed;
+            }
+            else
+            {
+                if (IsCrouched)
+                {
+                    audioSource.Stop();
+                }
+                else if (targetSpeed > 0 && Grounded)
+                {
+                    if (_input.sprint)
+                    {
+                        StartCoroutine(StepSound());
+                    }
+                    else if (!audioSource.isPlaying)
+                    {
+                        StopCoroutine(StepSound());
+                        audioSource.PlayOneShot(Steps[UnityEngine.Random.Range(0, 4)]);
+                    }
+                }
             }
 
             // a reference to the players current horizontal velocity
