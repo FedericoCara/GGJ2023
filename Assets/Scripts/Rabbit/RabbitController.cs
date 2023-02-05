@@ -27,6 +27,7 @@ public class RabbitController : MonoBehaviour
     private static readonly int HideParameter = Animator.StringToHash("Hide");
     private bool _escaping = false;
     private bool _captured = false;
+    private SpawnPoint _lastSpawnPoint;
 
     private void Start()
     {
@@ -36,6 +37,7 @@ public class RabbitController : MonoBehaviour
         _playerTransform = _player.transform;
         _player.Attacked += PlayerOnAttacked;
         _input = _playerTransform.GetComponent<StarterAssetsInputs>();
+        Respawn();
     }
 
     private void Update()
@@ -139,7 +141,11 @@ public class RabbitController : MonoBehaviour
 
     public void Respawn()
     {
-        transform.position = _spawnController.GetFarthestPoint(_playerTransform).position;
+        if(_lastSpawnPoint!=null)
+            _lastSpawnPoint.CleanFootprints();
+        _lastSpawnPoint = _spawnController.GetSpawnPoint(_playerTransform);
+        _lastSpawnPoint.DrawFootprints();
+        transform.position = _lastSpawnPoint.transform.position;
         _alertPercentage = 0;
         _escaping = false;
     }

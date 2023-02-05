@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RabbitSpawnController : MonoBehaviour
 {
-    private List<Transform> spawnPoints;
+    private List<SpawnPoint> spawnPoints;
 
     private void Awake()
     {
@@ -13,17 +13,16 @@ public class RabbitSpawnController : MonoBehaviour
 
     private void Initialize()
     {
-        spawnPoints = new List<Transform>(GetComponentsInChildren<Transform>());
-        spawnPoints.Remove(transform);
+        spawnPoints = new List<SpawnPoint>(GetComponentsInChildren<SpawnPoint>());
     }
 
-    public Transform GetFarthestPoint(Transform playerTransform)
+    public SpawnPoint GetSpawnPoint(Transform playerTransform)
     {
         float maxSqrDistance = 0, currentDistance;
-        Transform farthestPoint = null;
+        SpawnPoint farthestPoint = null;
         foreach (var spawnPoint in spawnPoints)
         {
-            if ((currentDistance=Vector3.SqrMagnitude(playerTransform.position - spawnPoint.position)) > maxSqrDistance)
+            if ((currentDistance=Vector3.SqrMagnitude(playerTransform.position - spawnPoint.transform.position)) > maxSqrDistance)
             {
                 maxSqrDistance = currentDistance;
                 farthestPoint = spawnPoint;
