@@ -543,6 +543,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4334992016181475489, guid: 6e571ffb0192347e19f84debbeb05503,
+        type: 3}
+      propertyPath: minDistanceSqr
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 5275371764167385537, guid: 6e571ffb0192347e19f84debbeb05503,
         type: 3}
       propertyPath: m_RootOrder

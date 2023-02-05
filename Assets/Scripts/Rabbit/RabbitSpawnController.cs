@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RabbitSpawnController : MonoBehaviour
 {
+    [SerializeField]
+    private float minDistanceSqr = 100;
+
     private List<SpawnPoint> spawnPoints;
 
     private void Awake()
@@ -18,17 +22,15 @@ public class RabbitSpawnController : MonoBehaviour
 
     public SpawnPoint GetSpawnPoint(Transform playerTransform)
     {
-        float maxSqrDistance = 0, currentDistance;
-        SpawnPoint farthestPoint = null;
-        foreach (var spawnPoint in spawnPoints)
-        {
-            if ((currentDistance=Vector3.SqrMagnitude(playerTransform.position - spawnPoint.transform.position)) > maxSqrDistance)
-            {
-                maxSqrDistance = currentDistance;
-                farthestPoint = spawnPoint;
-            }
-        }
+        var distantPoints = spawnPoints.FindAll(point =>
+            Vector3.SqrMagnitude(point.transform.position - playerTransform.position) >= minDistanceSqr);
 
-        return farthestPoint;
+        return distantPoints[Random.Range(0,distantPoints.Count)];
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, Mathf.Sqrt(minDistanceSqr));
     }
 }
