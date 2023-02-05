@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using DG.Tweening;
 using StarterAssets;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RabbitController : MonoBehaviour
 {
-    [SerializeField] private Vector3 _rabbitOffset = new Vector3(0,-0.5f,0);
+    [Header("Grab rabbit")]
+    [SerializeField] private Vector3 _rabbitOffset = new(0,-0.5f,0);
     [SerializeField] private float _grabDistance = 1f;
     [SerializeField] private float _grabDelay = 0.2f;
     [SerializeField] private float _grabbingDuration = 0.6f;
 
-
-
     [Header("Danger")]
     [SerializeField] private float minStandingDistanceSqr = 25;
-
     [SerializeField] private float minCrouchingDistanceSqr = 4;
     [SerializeField] private float dangerSpeedNormal = 0.1f;
     [SerializeField] private float dangerSpeedTooClose = 0.2f;
     private float MinStandingDistance => Mathf.Sqrt(minStandingDistanceSqr);
     private float MinCrouchingDistance => Mathf.Sqrt(minCrouchingDistanceSqr);
     public float AlertPercentage => _alertPercentage;
+    public event Action OnRabbitSpotted;
 
     private Animator _animator;
     private RabbitSpawnController _spawnController;
@@ -35,6 +35,7 @@ public class RabbitController : MonoBehaviour
     private bool _escaping = false;
     private bool _captured = false;
     private bool _gettingCaptured = false;
+    private bool _alreadySpotted = false;
     private SpawnPoint _lastSpawnPoint;
 
     private void Start()
@@ -164,6 +165,7 @@ public class RabbitController : MonoBehaviour
         transform.position = _lastSpawnPoint.transform.position;
         _alertPercentage = 0;
         _escaping = false;
+        _alreadySpotted = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -171,6 +173,15 @@ public class RabbitController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _captured = true;
+        }
+    }
+
+    private void OnBecameVisible()
+    {
+        if (!_alreadySpotted)
+        {
+            _alreadySpotted = true;
+            OnRabbitSpotted?.Invoke();
         }
     }
 

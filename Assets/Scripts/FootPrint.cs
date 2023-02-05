@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FootPrint : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class FootPrint : MonoBehaviour
     private List<float> fillRates;
 
     [SerializeField] private float stepTime = 0.5f;
+    [SerializeField] private AudioSource footPrintAudio;
+    [SerializeField] private List<AudioClip> pasitos;
 
     private MeshRenderer _meshRenderer;
     private Material _material;
@@ -37,6 +40,8 @@ public class FootPrint : MonoBehaviour
         for (int i = 0; i < fillRates.Count; i++)
         {
             _material.SetFloat(FillRate, fillRates[i]);
+            if(i%3==0)
+                footPrintAudio.PlayOneShot(pasitos[Random.Range(0,pasitos.Count)]);
             yield return new WaitForSeconds(stepTime);
         }
     }
