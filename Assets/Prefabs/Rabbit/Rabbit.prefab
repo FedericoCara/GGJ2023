@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rabbitOffset: {x: 0, y: -0.3, z: 0}
-  _grabDistance: 2
+  _grabDistance: 1
   _grabDelay: 0.2
   _grabbingDuration: 1
   minStandingDistanceSqr: 25
@@ -714,19 +714,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &850896657589866419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7790152697487688575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b962aea44bd342fc9b04ea636bdef72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rabbitController: {fileID: 2870009100756983447}
 --- !u!114 &416484063240354521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -740,3 +727,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 8613863964758972049}
+--- !u!114 &850896657589866419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7790152697487688575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b962aea44bd342fc9b04ea636bdef72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rabbitController: {fileID: 2870009100756983447}
