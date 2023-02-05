@@ -186,11 +186,11 @@ namespace StarterAssets
             if (_isAttacking && _attackTimeoutDelta <= 0)
             {
                 _isAttacking = false;
-                Attacked?.Invoke();
                 _attackTimeoutDelta = AttackTimeout;
             }
             else if (_attackTimeoutDelta <= 0)
             {
+                Attacked?.Invoke();
                 _isDamaging = false;
             }
             _input.attack = false;

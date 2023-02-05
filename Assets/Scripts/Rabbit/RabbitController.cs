@@ -7,6 +7,13 @@ using UnityEngine;
 
 public class RabbitController : MonoBehaviour
 {
+    [SerializeField] private Vector3 _rabbitOffset = new Vector3(0,-0.5f,0);
+    [SerializeField] private float _grabDistance = 1f;
+    [SerializeField] private float _grabDelay = 0.2f;
+    [SerializeField] private float _grabbingDuration = 0.6f;
+
+
+
     [Header("Danger")]
     [SerializeField] private float minStandingDistanceSqr = 25;
 
@@ -27,6 +34,7 @@ public class RabbitController : MonoBehaviour
     private static readonly int HideParameter = Animator.StringToHash("Hide");
     private bool _escaping = false;
     private bool _captured = false;
+    private bool _gettingCaptured = false;
     private SpawnPoint _lastSpawnPoint;
 
     private void Start()
@@ -56,7 +64,7 @@ public class RabbitController : MonoBehaviour
 
     private void CheckPlayer()
     {
-        if(_escaping)
+        if(_escaping || _gettingCaptured)
             return;
         PlayerAlertLevel playerAlertLevel = GetPlayerAlertLevel();
         switch (playerAlertLevel)
@@ -87,7 +95,7 @@ public class RabbitController : MonoBehaviour
     private PlayerAlertLevel GetPlayerAlertLevel()
     {
         var sqrDistance = Vector3.SqrMagnitude(_playerTransform.position - transform.position);
-        if (_player.IsAttacking)
+        if (_player.IsAttacking && sqrDistance < minStandingDistanceSqr)
             return PlayerAlertLevel.ATTACKING;
         if (!_player.IsCrouched)
         {
@@ -124,6 +132,9 @@ public class RabbitController : MonoBehaviour
 
     private void PlayerOnAttacked()
     {
+        var sqrDistance = Vector3.SqrMagnitude(_playerTransform.position - transform.position);
+        if (!_player.IsAttacking || sqrDistance >= minStandingDistanceSqr)
+            return;
         if (_captured)
         {
             DoCaptureAnimation();
@@ -136,7 +147,12 @@ public class RabbitController : MonoBehaviour
 
     private void DoCaptureAnimation()
     {
-        transform.DOMove(_playerTransform.position, 0.6f).OnComplete(() => GameManager.Instance.DoWin());
+        _player.enabled = false;
+        var handsTransform = _player.Hand.transform;
+        var handsPosition = handsTransform.position;
+        transform.position = handsPosition + _playerTransform.forward * _grabDistance + _rabbitOffset;
+        transform.DOMove(handsPosition - _playerTransform.forward * 0.3f + _rabbitOffset, _grabbingDuration).OnComplete(() => GameManager.Instance.DoWin()).SetDelay(_grabDelay);
+        _gettingCaptured = true;
     }
 
     public void Respawn()

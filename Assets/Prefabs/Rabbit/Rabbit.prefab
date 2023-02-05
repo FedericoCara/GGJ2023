@@ -122,6 +122,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb6980f93ba64cf0b5749b21ba32b8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rabbitOffset: {x: 0, y: -0.3, z: 0}
+  _grabDistance: 2
+  _grabDelay: 0.2
+  _grabbingDuration: 1
   minStandingDistanceSqr: 25
   minCrouchingDistanceSqr: 4
   dangerSpeedNormal: 0.1
@@ -155,6 +159,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -166,7 +185,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.21
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0f2c71cee271542bc94bbad8db6f37d0,
         type: 3}
