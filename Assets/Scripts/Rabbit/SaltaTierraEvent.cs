@@ -9,6 +9,7 @@ namespace Rabbit
         
         public void SaltaTierra()
         {
+            Debug.Log("Displaying Salta Tierra sound");
             _audioSource.Play();
         }
     }
