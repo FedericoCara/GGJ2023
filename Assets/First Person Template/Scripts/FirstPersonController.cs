@@ -75,6 +75,7 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 100.0f;
         private bool _isAttacking;
+        private bool _isDamaging;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -112,7 +113,7 @@ namespace StarterAssets
         }
         public bool IsAttacking
         {
-            get => _isAttacking;
+            get => _isDamaging;
         }
 
         private void Awake()
@@ -177,14 +178,20 @@ namespace StarterAssets
             //_input.jump = false;
             if (_input.attack && _attackTimeoutDelta <= 0 && !_isAttacking)
             {
+                _isDamaging = true;
                 _input.jump = true;
                 _isAttacking = true;
                 _attackTimeoutDelta = AttackTime;
             }
-            if (_isAttacking && _attackTimeoutDelta < 0)
+            if (_isAttacking && _attackTimeoutDelta <= 0)
             {
                 _isAttacking = false;
                 Attacked?.Invoke();
+                _attackTimeoutDelta = AttackTimeout;
+            }
+            else if (_attackTimeoutDelta <= 0)
+            {
+                _isDamaging = false;
             }
             _input.attack = false;
 
