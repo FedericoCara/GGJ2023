@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eb6980f93ba64cf0b5749b21ba32b8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rabbitOffset: {x: 0, y: -0.3, z: 0}
+  _rabbitOffset: {x: 0, y: -0.6, z: 0}
   _grabDistance: 1
   _grabDelay: 0.2
   _grabbingDuration: 1
