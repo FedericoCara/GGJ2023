@@ -2067,7 +2067,7 @@ AnimationClip:
   m_Events:
   - time: 27
     functionName: LoadScene
-    data: Rabbit Movement
+    data: Gameplay
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
