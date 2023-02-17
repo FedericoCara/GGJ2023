@@ -120,7 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada3cc4add7b4f868139d86eaed991b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDistanceSqr: 100
+  navMesh: {fileID: 23800000, guid: e53d5a5cf4a60445c80268a8457494d4, type: 2}
+  minDistanceSqr: 1000
 --- !u!1001 &163657070039299379
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class RabbitSpawnController : MonoBehaviour
 {
-    [SerializeField]
-    private float minDistanceSqr = 100;
+    [SerializeField] private FootPrint footprintPrefab;
+    [SerializeField] private float minDistanceSqr = 100;
 
-    private List<SpawnPoint> spawnPoints;
+    private List<SpawnPoint> spawnPoints = new();
 
     private void Awake()
     {
@@ -17,7 +18,8 @@ public class RabbitSpawnController : MonoBehaviour
 
     private void Initialize()
     {
-        spawnPoints = new List<SpawnPoint>(GetComponentsInChildren<SpawnPoint>());
+        spawnPoints.Clear();
+        spawnPoints.AddRange(GetComponentsInChildren<SpawnPoint>());
     }
 
     public SpawnPoint GetSpawnPoint(Transform playerTransform)
@@ -32,5 +34,14 @@ public class RabbitSpawnController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, Mathf.Sqrt(minDistanceSqr));
+    }
+
+    public void GenerateFootprints()
+    {
+        Initialize();
+        foreach (var spawnPoint in spawnPoints)
+        {
+            spawnPoint.GenerateFootprints(footprintPrefab);
+        }
     }
 }
